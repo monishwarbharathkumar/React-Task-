@@ -1,0 +1,96 @@
+
+import React, { useEffect, useReducer, useRef, useState } from "react";
+import "./App.css";
+
+
+function counterReducer(state, action) {
+  switch (action.type) {
+    case "INCREMENT":
+      return state + 1;
+    case "DECREMENT":
+      return state - 1;
+    case "RESET":
+      return 0;
+    default:
+      return state;
+  }
+}
+
+const getSavedCounter = () => {
+  const saved = localStorage.getItem("counter");
+  return saved !== null ? Number(saved) : 0;
+};
+
+function App() {
+  
+  const [count, dispatch] = useReducer(
+    counterReducer,
+    undefined,
+    getSavedCounter
+  );
+
+  
+  const [text, setText] = useState("");
+
+  
+  const inputRef = useRef(null);
+
+  
+  const [darkMode, setDarkMode] = useState(false);
+
+  
+  useEffect(() => {
+    localStorage.setItem("counter", count);
+  }, [count]);
+
+  return (
+    <div className={darkMode ? "app dark" : "app"}>
+      <h1>React Hooks Demo</h1>
+
+      
+      <section>
+        <h2>Counter: {count}</h2>
+
+        <button onClick={() => dispatch({ type: "INCREMENT" })}>
+          +
+        </button>
+
+        <button onClick={() => dispatch({ type: "DECREMENT" })}>
+          -
+        </button>
+
+        <button onClick={() => dispatch({ type: "RESET" })}>
+          Reset
+        </button>
+      </section>
+      
+      <section>
+        <h2>Live Text Preview</h2>
+
+        <input
+          ref={inputRef}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="Type something..."
+        />
+
+        <button onClick={() => inputRef.current.focus()}>
+          Focus
+        </button>
+
+        <p>Preview: {text || "Nothing typed yet"}</p>
+      </section>
+
+      
+      <section>
+        <h2>Theme</h2>
+
+        <button onClick={() => setDarkMode(!darkMode)}>
+          {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+        </button>
+      </section>
+    </div>
+  );
+}
+
+export default App;
