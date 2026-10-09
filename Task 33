@@ -1,0 +1,87 @@
+import React from "react";
+import {
+  Routes,
+  Route,
+  Link,
+  useParams,
+  useNavigate,
+} from "react-router-dom";
+
+function Home() {
+  return <h2>Home Page</h2>;
+}
+
+function About() {
+  return <h2>About Page</h2>;
+}
+
+function Users() {
+  const users = [
+    { id: 1, name: "Rajesh" },
+    { id: 2, name: "Koushik" },
+    { id: 3, name: "Ashif" },
+  ];
+
+  return (
+    <div>
+      <h2>Users Page</h2>
+
+      {users.map((user) => (
+        <p key={user.id}>
+          <Link to={`/users/${user.id}`}>
+            {user.name}
+          </Link>
+        </p>
+      ))}
+    </div>
+  );
+}
+
+// Dynamic route: /users/:id
+function UserDetails() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
+  return (
+    <div>
+      <h2>User Details</h2>
+      <p>User ID: {id}</p>
+
+      <button onClick={() => navigate("/users")}>
+        Back to Users
+      </button>
+    </div>
+  );
+}
+
+function Navbar() {
+  return (
+    <nav>
+      <Link to="/">Home</Link>{" | "}
+      <Link to="/about">About</Link>{" | "}
+      <Link to="/users">Users</Link>
+    </nav>
+  );
+}
+
+function App() {
+  return (
+    <div style={{ padding: 30 }}>
+      <h1>React Router Demo</h1>
+
+      {/* Link-based navigation */}
+      <Navbar />
+
+      <hr />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<UserDetails />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default App;
