@@ -1,0 +1,113 @@
+import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
+import { configureStore, createSlice } from "@reduxjs/toolkit";
+import { Provider, useSelector, useDispatch } from "react-redux";
+
+const counterSlice = createSlice({
+  name: "counter",
+  initialState: { value: 0 },
+  reducers: {
+    increment: (state) => {
+      state.value += 1;
+    },
+    decrement: (state) => {
+      state.value -= 1;
+    },
+  },
+});
+
+const { increment, decrement } = counterSlice.actions;
+
+const todosSlice = createSlice({
+  name: "todos",
+  initialState: { todos: [] },
+  reducers: {
+    addTodo: (state, action) => {
+      state.todos.push({
+        id: Date.now(),
+        text: action.payload,
+        completed: false,
+      });
+    },
+    toggleTodo: (state, action) => {
+      const todo = state.todos.find((todo) => todo.id === action.payload);
+      if (todo) {
+        todo.completed = !todo.completed;
+      }
+    },
+  },
+});
+
+const { addTodo, toggleTodo } = todosSlice.actions;
+
+const store = configureStore({
+  reducer: {
+    counter: counterSlice.reducer,
+    todos: todosSlice.reducer,
+  },
+});
+
+const Counter = () => {
+  const count = useSelector((state) => state.counter.value);
+  const dispatch = useDispatch();
+
+  return (
+    <div>
+      <h1>Redux Counter</h1>
+      <h2>{count}</h2>
+      <button onClick={() => dispatch(increment())}>Increment</button>
+      <button onClick={() => dispatch(decrement())}>Decrement</button>
+    </div>
+  );
+};
+
+const Todo = () => {
+  const [text, setText] = useState("");
+  const todos = useSelector((state) => state.todos.todos);
+  const dispatch = useDispatch();
+
+  const handleAddTodo = () => {
+    if (text.trim() === "") return;
+    dispatch(addTodo(text));
+    setText("");
+  };
+
+  return (
+    <div>
+      <h1>Todo List</h1>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Enter todo"
+      />
+      <button onClick={handleAddTodo}>Add Todo</button>
+      <ul>
+        {todos.map((todo) => (
+          <li key={todo.id}>
+            <span
+              onClick={() => dispatch(toggleTodo(todo.id))}
+              style={{
+                textDecoration: todo.completed ? "line-through" : "none",
+                cursor: "pointer",
+              }}
+            >
+              {todo.text}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const App = () => (
+  <Provider store={store}>
+    <Counter />
+    <Todo />
+  </Provider>
+);
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+export default App;
