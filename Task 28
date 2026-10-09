@@ -1,0 +1,66 @@
+// Task 1: Reusable Button
+function Button({ label, onClick }) {
+  return <button onClick={onClick}>{label}</button>;
+}
+
+// Task 2: Header and Footer using props
+function Header({ text }) {
+  return <h1>{text}</h1>;
+}
+
+function Footer({ text }) {
+  return <p>{text}</p>;
+}
+
+// Task 4: UserCard using props
+function UserCard({ name, age }) {
+  return (
+    <div>
+      <h3>Name: {name}</h3>
+      <p>Age: {age}</p>
+    </div>
+  );
+}
+
+// Task 3 and 5: Layout using children
+function Layout({ children }) {
+  return (
+    <div>
+      <Header text="My Website" />
+      <main>{children}</main>
+      <Footer text="Copyright 2026" />
+    </div>
+  );
+}
+
+function App() {
+  function sayHello() {
+    alert("Hello!");
+  }
+
+  return (
+    <div>
+      {/* Task 1 */}
+      <Button label="Click Me" onClick={sayHello} />
+      <Button label="Welcome" onClick={() => alert("Welcome!")} />
+
+      <hr />
+
+      {/* Task 2 */}
+      <Header text="Welcome to My Website" />
+      <p>This is the main content.</p>
+      <Footer text="Copyright 2026 - My Website" />
+
+      <hr />
+
+      {/* Tasks 3, 4 and 5 */}
+      <Layout>
+        <h2>Our Users</h2>
+        <UserCard name="Rahul" age={20} />
+        <UserCard name="Priya" age={21} />
+      </Layout>
+    </div>
+  );
+}
+
+export default App;
